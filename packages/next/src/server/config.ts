@@ -132,6 +132,31 @@ function checkDeprecations(
 
   warnOptionHasBeenDeprecated(
     userConfig,
+    'experimental.middlewarePrefetch',
+    `\`experimental.middlewarePrefetch\` is deprecated. Please use \`experimental.proxyPrefetch\` instead in ${configFileName}.`,
+    silent
+  )
+  warnOptionHasBeenDeprecated(
+    userConfig,
+    'experimental.middlewareClientMaxBodySize',
+    `\`experimental.middlewareClientMaxBodySize\` is deprecated. Please use \`experimental.proxyClientMaxBodySize\` instead in ${configFileName}.`,
+    silent
+  )
+  warnOptionHasBeenDeprecated(
+    userConfig,
+    'experimental.externalMiddlewareRewritesResolve',
+    `\`experimental.externalMiddlewareRewritesResolve\` is deprecated. Please use \`experimental.externalProxyRewritesResolve\` instead in ${configFileName}.`,
+    silent
+  )
+  warnOptionHasBeenDeprecated(
+    userConfig,
+    'skipMiddlewareUrlNormalize',
+    `\`skipMiddlewareUrlNormalize\` is deprecated. Please use \`skipProxyUrlNormalize\` instead in ${configFileName}.`,
+    silent
+  )
+
+  warnOptionHasBeenDeprecated(
+    userConfig,
     'experimental.instrumentationHook',
     `\`experimental.instrumentationHook\` is no longer needed, because \`instrumentation.js\` is available by default. You can remove it from ${configFileName}.`,
     silent
@@ -717,6 +742,35 @@ function assignDefaultsAndValidate(
         'Server Actions Size Limit must be a valid number or filesize format larger than 1MB: https://nextjs.org/docs/app/api-reference/next-config-js/serverActions#bodysizelimit'
       )
     }
+  }
+
+  // Map Proxy config to Middleware config as it is currently an alias.
+  if (
+    userConfig.experimental?.proxyClientMaxBodySize === undefined &&
+    userConfig.experimental?.middlewareClientMaxBodySize !== undefined
+  ) {
+    result.experimental.proxyClientMaxBodySize =
+      userConfig.experimental.middlewareClientMaxBodySize
+  }
+  if (
+    userConfig.experimental?.proxyPrefetch === undefined &&
+    userConfig.experimental?.middlewarePrefetch !== undefined
+  ) {
+    result.experimental.proxyPrefetch =
+      userConfig.experimental.middlewarePrefetch
+  }
+  if (
+    userConfig.experimental?.externalProxyRewritesResolve === undefined &&
+    userConfig.experimental?.externalMiddlewareRewritesResolve !== undefined
+  ) {
+    result.experimental.externalProxyRewritesResolve =
+      userConfig.experimental.externalMiddlewareRewritesResolve
+  }
+  if (
+    userConfig.skipProxyUrlNormalize === undefined &&
+    userConfig.skipMiddlewareUrlNormalize !== undefined
+  ) {
+    result.skipProxyUrlNormalize = userConfig.skipMiddlewareUrlNormalize
   }
 
   // Normalize & validate experimental.middlewareClientMaxBodySize
