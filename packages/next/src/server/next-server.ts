@@ -1653,7 +1653,7 @@ export default class NextNodeServer extends BaseServer<
 
     let url: string
 
-    if (this.nextConfig.skipMiddlewareUrlNormalize) {
+    if (this.nextConfig.skipProxyUrlNormalize) {
       url = getRequestMeta(params.request, 'initURL')!
     } else {
       // For middleware to "fetch" we must always provide an absolute URL
@@ -1958,7 +1958,7 @@ export default class NextNodeServer extends BaseServer<
 
     if (!isUpgradeReq) {
       const bodySizeLimit = this.nextConfig.experimental
-        ?.middlewareClientMaxBodySize as number | undefined
+        ?.proxyClientMaxBodySize as number | undefined
       addRequestMeta(
         req,
         'clonableBody',
